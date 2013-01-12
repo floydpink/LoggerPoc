@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Castle.DynamicProxy;
 using log4net;
@@ -27,9 +28,37 @@ namespace LoggerPoc.Logging
             try
             {
                 invocation.Proceed();
+
                 if (Log.IsDebugEnabled)
-                    if (invocation.Method.ReturnType != typeof(void))
-                        Log.Debug("Returning with: " + invocation.ReturnValue);
+                {
+                    var returnType = invocation.Method.ReturnType;
+                    if (returnType != typeof(void))
+                    {
+                        var returnValue = invocation.ReturnValue;
+                        if (returnType == typeof(Task))
+                        {
+                            Log.Debug("Returning with a task.");
+                        }
+                        else if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>))
+                        {
+                            Log.Debug("Returning with a generic task.");
+                            var task = (Task)returnValue;
+                            task.ContinueWith((antecedent) =>
+                                                  {
+                                                      var taskDescriptor = CreateInvocationLogString("Task from", invocation);
+                                                      var result =
+                                                          antecedent.GetType()
+                                                                    .GetProperty("Result")
+                                                                    .GetValue(antecedent, null);
+                                                      Log.Debug(taskDescriptor + " returning with: " + result);
+                                                  });
+                        }
+                        else
+                        {
+                            Log.Debug("Returning with: " + returnValue);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

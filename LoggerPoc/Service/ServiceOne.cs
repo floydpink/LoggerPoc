@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using log4net;
 
 namespace LoggerPoc.Service
@@ -23,9 +24,11 @@ namespace LoggerPoc.Service
             Console.WriteLine("In ServiceOne.Foo");
         }
 
-        public int Bar(int left, int right)
+        public async Task<int> Bar(int left, int right)
         {
-            Console.WriteLine("In ServiceOne.Bar");
+            Console.WriteLine("In ServiceOne.Bar. About to add a delay of a second");
+            await Task.Delay(1000);
+            Console.WriteLine("Done with the delay. Doing the math now");
             var sum = left + right;
             return sum;
         }

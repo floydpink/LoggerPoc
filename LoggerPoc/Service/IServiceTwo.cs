@@ -1,7 +1,9 @@
-﻿namespace LoggerPoc.Service
+﻿using System.Threading.Tasks;
+
+namespace LoggerPoc.Service
 {
     public interface IServiceTwo
     {
-        void Baz();
+        Task Baz();
     }
 }

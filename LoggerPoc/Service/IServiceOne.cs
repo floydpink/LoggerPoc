@@ -1,9 +1,11 @@
-﻿namespace LoggerPoc.Service
+﻿using System.Threading.Tasks;
+
+namespace LoggerPoc.Service
 {
     public interface IServiceOne
     {
         void Foo();
-        int Bar(int left, int right);
+        Task<int> Bar(int left, int right);
         int Boom(int num);
     }
 }

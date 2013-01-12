@@ -1,29 +1,17 @@
-﻿using LoggerPoc.Bootstrap;
+﻿using System;
+using System.Threading.Tasks;
+using LoggerPoc.Bootstrap;
 using LoggerPoc.Service;
-using System;
 
 namespace LoggerPoc
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
-                Bootstrapper.BootstrapStructureMap();
-
-                IServiceOne serviceOne = Bootstrapper.GetInstance<IServiceOne>();
-                IServiceTwo serviceTwo = Bootstrapper.GetInstance<IServiceTwo>();
-
-                serviceOne.Foo();
-                serviceOne.Bar(34, 56);
-                serviceOne.Boom(3);
-
-                serviceTwo.Baz();
-
-                serviceOne.Boom(0);
-
-                Console.WriteLine("Done...");
+                DoStuff();
             }
             catch (Exception e)
             {
@@ -33,6 +21,24 @@ namespace LoggerPoc
             {
                 Console.ReadKey(true);
             }
+        }
+
+        private static async Task DoStuff()
+        {
+            Bootstrapper.BootstrapStructureMap();
+
+            var serviceOne = Bootstrapper.GetInstance<IServiceOne>();
+            var serviceTwo = Bootstrapper.GetInstance<IServiceTwo>();
+
+            serviceOne.Foo();
+            Console.WriteLine("Bar result: " + await serviceOne.Bar(34, 56));
+            serviceOne.Boom(3);
+
+            await serviceTwo.Baz();
+
+            serviceOne.Boom(0);
+
+            Console.WriteLine("Done...");
         }
     }
 }
