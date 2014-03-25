@@ -13,7 +13,7 @@ namespace LoggerPoc.Helper
             var proxyGenerator = new ProxyGenerator();
             var result = proxyGenerator.CreateInterfaceProxyWithTargetInterface(interfaceType,
                 concreteObject,
-                new[] { new LogInterceptor(LogManager.GetLogger(concreteObject.GetType())) });
+                new IInterceptor[] { new LogInterceptor(LogManager.GetLogger(concreteObject.GetType())) });
 
             return result;
         }
